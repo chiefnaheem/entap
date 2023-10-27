@@ -1,6 +1,9 @@
 import { BadRequestException } from '@nestjs/common';
 import { isNumberString } from 'class-validator';
 import * as bcrypt from 'bcryptjs';
+import * as CryptoJS from 'crypto-js';
+
+
 export const comparePassword = (text: string, hashedText: string) => {
   return bcrypt.compareSync(text, hashedText);
 };
@@ -37,4 +40,22 @@ export const isPhoneNumber = (value: string): boolean => {
       value.startsWith('234') ||
       value.startsWith('0'))
   );
+};
+
+// Encryption function
+export const encrypt = (text: string) => {
+  const encrypted = CryptoJS.AES.encrypt(
+    text,
+    process.env.ENCRYPTION_KEY,
+  ).toString();
+  return encrypted;
+};
+
+// Decryption function
+export const decrypt = (encryptedText: string) => {
+  const decrypted = CryptoJS.AES.decrypt(
+    encryptedText,
+    process.env.ENCRYPTION_KEY,
+  ).toString(CryptoJS.enc.Utf8);
+  return decrypted;
 };

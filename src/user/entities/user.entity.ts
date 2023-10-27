@@ -1,5 +1,6 @@
 import { Exclude, Transform } from 'class-transformer';
 import { BaseEntity } from 'src/common/entity/base.entity';
+import { Wallet } from 'src/wallet/entities/wallet.entity';
 import { BeforeInsert, Column, Entity, OneToMany, ManyToOne } from 'typeorm';
 import { UserRole } from '../enum/user.enum';
 
@@ -48,5 +49,8 @@ export class User extends BaseEntity {
   get hasAge(): boolean {
     return this.age !== null && this.age !== undefined;
   }
+
+  @OneToMany(() => Wallet, (wallet) => wallet.user)
+  wallets: Wallet[];
 
 }

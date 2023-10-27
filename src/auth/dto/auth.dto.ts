@@ -10,6 +10,7 @@ import {
   Length,
   Matches,
   Min,
+  MinLength,
 } from 'class-validator';
 
 export class LoginDto {
@@ -36,10 +37,6 @@ export class UserTokenDto {
   phoneNumber: string;
 }
 
-
-
-
-
 export class RegisterDto {
   @IsPhoneNumber('NG')
   @IsNotEmpty()
@@ -55,10 +52,9 @@ export class RegisterDto {
 
   @IsNotEmpty()
   @IsString()
-  @Min(6)
-  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/, {
-    message:
-      'Password must contain at least 1 uppercase letter, 1 lowercase letter and 1 number',
+  @MinLength(6)
+  @Matches(/^(?=.*[a-zA-Z])(?=.*\d).{6,}$/, {
+    message: 'Password must contain at least 1 letter and 1 number',
   })
   password: string;
 

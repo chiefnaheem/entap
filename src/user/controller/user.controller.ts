@@ -10,7 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import {  ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiTags } from '@nestjs/swagger';
 
 import { IResponse } from 'src/common/interface/response.interface';
 import { UpdateUserDto } from '../dto/user.dto';
@@ -20,13 +20,14 @@ import { UserService } from '../service/user.service';
 @Controller('user')
 @UseGuards(AuthGuard())
 export class UserController {
-  constructor(
-    private readonly userService: UserService,
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
-
-
-  @ApiParam({ name: 'id', type: String, required: true, description: 'User ID' })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    required: true,
+    description: 'User ID',
+  })
   @Patch('update-user/:id')
   async updateUser(
     @Param('id') id: string,
@@ -43,8 +44,4 @@ export class UserController {
       throw error;
     }
   }
-
-
-
-
 }

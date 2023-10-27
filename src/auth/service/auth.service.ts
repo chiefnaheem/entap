@@ -5,6 +5,7 @@ import {
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
+import { classToPlain, instanceToPlain } from 'class-transformer';
 import {
   comparePassword,
   hashPassword,
@@ -55,7 +56,7 @@ export class AuthService {
         `Generated JWT Token with payload ${JSON.stringify(payload)}`,
       );
 
-      return { accessToken, user: userExists };
+      return { accessToken, user: instanceToPlain(userExists)  };
     } catch (error) {
       this.logger.error(error);
       throw error;
@@ -77,7 +78,7 @@ export class AuthService {
         password: hashedPassword,
         role: UserRole.USER,
       });
-      return newUser;
+      return instanceToPlain(newUser);
     } catch (error) {
       this.logger.error(error);
       throw error;

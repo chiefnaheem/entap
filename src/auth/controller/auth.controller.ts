@@ -1,7 +1,7 @@
 import { Body, Controller, HttpStatus, Logger, Post, UseGuards } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { ResponseDto } from 'src/common/interface/response.interface';
-import { LoginDto, RegisterDto, ResetPasswordDto } from '../dto/auth.dto';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { IResponse } from 'src/common/interface/response.interface';
+import { LoginDto, RegisterDto } from '../dto/auth.dto';
 import { AuthService } from '../service/auth.service';
 
 @ApiTags('Auth')
@@ -11,8 +11,9 @@ export class AuthController {
 
   constructor(private authService: AuthService) {}
 
+  @ApiBody({ type: LoginDto, required: true })
   @Post('login')
-  async login(@Body() data: LoginDto): Promise<ResponseDto> {
+  async login(@Body() data: LoginDto): Promise<IResponse> {
     try {
       const response = await this.authService.login(data);
       return {
@@ -27,9 +28,9 @@ export class AuthController {
   }
 
 
-
+  @ApiBody({ type: RegisterDto, required: true })
   @Post('register')
-  async register(@Body() data: RegisterDto): Promise<ResponseDto> {
+  async register(@Body() data: RegisterDto): Promise<IResponse> {
     try {
       const response = await this.authService.register(data);
       return {

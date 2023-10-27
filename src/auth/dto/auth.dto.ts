@@ -1,9 +1,21 @@
-import { IsAlphanumeric, IsEmail, IsNotEmpty, IsOptional, IsString, Length, Min } from 'class-validator';
+import {
+  IsAlphanumeric,
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsPassportNumber,
+  IsPhoneNumber,
+  IsString,
+  IsUUID,
+  Length,
+  Matches,
+  Min,
+} from 'class-validator';
 
 export class LoginDto {
   @IsEmail()
   @IsNotEmpty()
-  email: string;
+  phoneNumber: string;
 
   @IsNotEmpty()
   @IsString()
@@ -11,56 +23,46 @@ export class LoginDto {
 }
 
 export class UserTokenDto {
-  phoneNumber: string;
-  id: string;
+  @IsNotEmpty()
+  @IsString()
   role: string;
-}
 
-
-export class ResetPasswordDto {
-  @IsEmail()
   @IsNotEmpty()
-  email: string;
+  @IsUUID()
+  id: string;
 
   @IsNotEmpty()
   @IsString()
-  password: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @Length(6)
-  otp: string;
+  phoneNumber: string;
 }
+
+
+
 
 
 export class RegisterDto {
-  @IsEmail()
+  @IsPhoneNumber('NG')
   @IsNotEmpty()
-  email: string;
-
-  @IsNotEmpty()
-  @IsString()
-  firstName: string;
-
-  @IsNotEmpty()
-  @IsString()
-  lastName: string;
-
-  @IsOptional()
-  @IsString()
   phoneNumber: string;
 
   @IsOptional()
   @IsString()
-  address: string;
+  firstName: string;
+
+  @IsOptional()
+  @IsString()
+  lastName: string;
 
   @IsNotEmpty()
   @IsString()
-  @Length(6)
+  @Min(6)
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/, {
+    message:
+      'Password must contain at least 1 uppercase letter, 1 lowercase letter and 1 number',
+  })
   password: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  @Length(6)
-  confirmPassword: string;
+  dateOfBirth: string;
 }

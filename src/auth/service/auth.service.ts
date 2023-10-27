@@ -8,7 +8,7 @@ import {
 import { comparePassword, hashPassword } from 'src/common/functions/common';
 import { UserRole } from 'src/user/enum/user.enum';
 import { UserService } from 'src/user/service/user.service';
-import { LoginDto, RegisterDto, ResetPasswordDto } from '../dto/auth.dto';
+import { LoginDto, RegisterDto } from '../dto/auth.dto';
 import { JwtPayload } from '../strategies/jwt.strategy';
 import { TokenService } from './token.service';
 
@@ -33,8 +33,8 @@ export class AuthService {
 
   async login(user: LoginDto) {
     try {
-      const { email, password } = user;
-      const userExists = await this.validateUser(email, password);
+      const { phoneNumber, password } = user;
+      const userExists = await this.validateUser(phoneNumber, password);
       if (!userExists) {
         throw new UnauthorizedException('Invalid credentials');
       }
@@ -59,16 +59,12 @@ export class AuthService {
 
   async register(user: RegisterDto) {
     try {
-      const { phoneNumber, password, confirmPassword } = user;
+      const { phoneNumber, password } = user;
       const userExists = await this.findUserByPhone(phoneNumber);
       if (userExists) {
         throw new ConflictException('User already exists');
       }
-      if (password !== confirmPassword) {
-        throw new BadRequestException(
-          'Password and confirm password does not match',
-        );
-      }
+
       const hashedPassword = hashPassword(password);
       const newUser = await this.userService.createUser({
         ...user,

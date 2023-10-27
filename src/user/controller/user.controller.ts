@@ -12,7 +12,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import {  ApiParam, ApiTags } from '@nestjs/swagger';
 
-import { ResponseDto } from 'src/common/interface/response.interface';
+import { IResponse } from 'src/common/interface/response.interface';
 import { UpdateUserDto } from '../dto/user.dto';
 import { UserService } from '../service/user.service';
 
@@ -31,7 +31,7 @@ export class UserController {
   async updateUser(
     @Param('id') id: string,
     @Body() body: UpdateUserDto,
-  ): Promise<ResponseDto> {
+  ): Promise<IResponse> {
     try {
       const user = await this.userService.updateUser(id, body);
       return {

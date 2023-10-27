@@ -72,7 +72,7 @@ export class UserService {
     }
   }
 
-  async updateUser(id: string, user: Partial<User>) {
+  async updateUser(id: string, user: Partial<User>): Promise<User> {
     try {
       this.logger.debug(`Updating user with id ${id}`);
       Object.assign(user, { id });

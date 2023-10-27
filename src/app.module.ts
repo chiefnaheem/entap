@@ -1,10 +1,23 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { Module, RequestMethod } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import typeOrmConfig from 'typeorm.config';
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    TypeOrmModule.forRoot(typeOrmConfig),
+
+    ConfigModule.forRoot({
+      isGlobal: true,
+      cache: false,
+    }),
+
+    AuthModule,
+    UserModule,
+  ],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

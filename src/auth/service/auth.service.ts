@@ -5,7 +5,7 @@ import {
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
-import { comparePassword, hashPassword } from 'src/common/functions/common';
+import { comparePassword, hashPassword, unifyPhoneNumber } from 'src/common/functions/common';
 import { UserRole } from 'src/user/enum/user.enum';
 import { UserService } from 'src/user/service/user.service';
 import { LoginDto, RegisterDto } from '../dto/auth.dto';
@@ -60,7 +60,8 @@ export class AuthService {
   async register(user: RegisterDto) {
     try {
       const { phoneNumber, password } = user;
-      const userExists = await this.findUserByPhone(phoneNumber);
+      const unifiedPhoneNumber = unifyPhoneNumber(phoneNumber);
+      const userExists = await this.findUserByPhone(unifiedPhoneNumber);
       if (userExists) {
         throw new ConflictException('User already exists');
       }

@@ -1,3 +1,4 @@
+import { Exclude, Transform } from 'class-transformer';
 import { BaseEntity } from 'src/common/entity/base.entity';
 import { BeforeInsert, Column, Entity, OneToMany, ManyToOne } from 'typeorm';
 import { UserRole } from '../enum/user.enum';
@@ -6,6 +7,7 @@ import { UserRole } from '../enum/user.enum';
   name: 'user',
 })
 export class User extends BaseEntity {
+  @Exclude()
   @Column({ nullable: false })
   password: string;
 
@@ -15,7 +17,7 @@ export class User extends BaseEntity {
   @Column({ nullable: true })
   lastName: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, unique: true })
   phoneNumber: string;
 
   @Column({ enum: Object.values(UserRole), default: UserRole.USER })
@@ -41,4 +43,10 @@ export class User extends BaseEntity {
     }
     this.age = age;
   }
+
+  @Transform(({ value }) => (value && value !== '' ? true : false))
+  get hasAge(): boolean {
+    return this.age !== null && this.age !== undefined;
+  }
+
 }

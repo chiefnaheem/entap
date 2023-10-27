@@ -11,6 +11,7 @@ import {
   hashPassword,
   unifyPhoneNumber,
 } from 'src/common/functions/common';
+import { User } from 'src/user/entities/user.entity';
 import { UserRole } from 'src/user/enum/user.enum';
 import { UserService } from 'src/user/service/user.service';
 import { LoginDto, RegisterDto } from '../dto/auth.dto';
@@ -36,7 +37,7 @@ export class AuthService {
     return null;
   }
 
-  async login(user: LoginDto) {
+  async login(user: LoginDto): Promise<{ accessToken: string; user: Partial<User> }> {
     try {
       const { phoneNumber, password } = user;
       const unifiedPhoneNumber = unifyPhoneNumber(phoneNumber);
@@ -63,7 +64,7 @@ export class AuthService {
     }
   }
 
-  async register(user: RegisterDto) {
+  async register(user: RegisterDto): Promise<Partial<User>> {
     try {
       const { phoneNumber, password } = user;
       const unifiedPhoneNumber = unifyPhoneNumber(phoneNumber);

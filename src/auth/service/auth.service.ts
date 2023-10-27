@@ -5,7 +5,11 @@ import {
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
-import { comparePassword, hashPassword, unifyPhoneNumber } from 'src/common/functions/common';
+import {
+  comparePassword,
+  hashPassword,
+  unifyPhoneNumber,
+} from 'src/common/functions/common';
 import { UserRole } from 'src/user/enum/user.enum';
 import { UserService } from 'src/user/service/user.service';
 import { LoginDto, RegisterDto } from '../dto/auth.dto';
@@ -34,7 +38,8 @@ export class AuthService {
   async login(user: LoginDto) {
     try {
       const { phoneNumber, password } = user;
-      const userExists = await this.validateUser(phoneNumber, password);
+      const unifiedPhoneNumber = unifyPhoneNumber(phoneNumber);
+      const userExists = await this.validateUser(unifiedPhoneNumber, password);
       if (!userExists) {
         throw new UnauthorizedException('Invalid credentials');
       }

@@ -14,7 +14,7 @@ import {
 } from 'class-validator';
 
 export class LoginDto {
-  @IsEmail()
+  @IsPhoneNumber('NG')
   @IsNotEmpty()
   phoneNumber: string;
 

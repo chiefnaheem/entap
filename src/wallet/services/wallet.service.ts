@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { encrypt } from 'src/common/functions/common';
+import { decrypt, encrypt } from 'src/common/functions/common';
 import { HttpServices } from 'src/common/http/http.service';
 import { UserService } from 'src/user/service/user.service';
 import { Repository } from 'typeorm';
@@ -17,6 +17,7 @@ export class WalletService {
 
   async createWallet(wallet: Partial<Wallet>, user: string): Promise<Wallet> {
     try {
+      wallet.accountNumber = Date.now().toString().slice(0, 10);
       this.logger.debug(`Creating wallet with data ${JSON.stringify(wallet)}`);
 
       const existingWallet = await this.walletRepository.findOne({
@@ -56,13 +57,9 @@ export class WalletService {
         throw new BadRequestException('Wallet does not exist');
       }
 
-      const updatedWallet = this.walletRepository.merge(
-        existingWallet,
-        wallet,
-      );
-        
-      return await this.walletRepository.save(updatedWallet);
+      const updatedWallet = this.walletRepository.merge(existingWallet, wallet);
 
+      return await this.walletRepository.save(updatedWallet);
     } catch (error) {
       this.logger.error(error);
       throw error;
@@ -77,6 +74,9 @@ export class WalletService {
           user,
         },
       });
+      wallets.forEach((wallet) => {
+        wallet.accountNumber = decrypt(wallet.accountNumber);
+      });
       return wallets;
     } catch (error) {
       this.logger.error(error);
@@ -88,6 +88,7 @@ export class WalletService {
     try {
       this.logger.debug(`Finding wallet with id ${id}`);
       const wallet = await this.walletRepository.findOne(id);
+      wallet.accountNumber = decrypt(wallet.accountNumber);
       return wallet;
     } catch (error) {
       this.logger.error(error);

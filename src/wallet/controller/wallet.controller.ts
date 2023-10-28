@@ -10,7 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Request } from 'express';
 import { IResponse } from 'src/common/interface/response.interface';
@@ -25,6 +25,7 @@ import { WalletService } from '../services/wallet.service';
 import { WalletEvent } from '../enum/wallet.enum';
 
 @ApiTags('Wallet')
+@ApiBearerAuth()
 @Controller('wallet')
 @UseGuards(AuthGuard())
 export class WalletController {
@@ -49,6 +50,7 @@ export class WalletController {
       data: wallet,
     };
   }
+
 
   @Get('find-wallet/:id')
   async findWallet(@Param('id', ParseUUIDPipe) id: string): Promise<IResponse> {

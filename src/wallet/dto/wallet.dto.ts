@@ -3,10 +3,6 @@ import { IsBoolean, IsEnum, IsInt, IsNotEmpty, IsOptional, IsString } from 'clas
 import { CurrencyEnum } from '../enum/wallet.enum';
 
 export class CreateWalletDto {
-  @ApiProperty({ description: 'The account number of the wallet' })
-  @IsString()
-  @IsNotEmpty()
-  accountNumber: string;
 
   @ApiProperty({ description: 'The currency of the wallet', enum: CurrencyEnum, default: CurrencyEnum.NGN })
   @IsEnum(CurrencyEnum)

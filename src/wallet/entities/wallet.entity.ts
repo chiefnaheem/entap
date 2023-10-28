@@ -19,9 +19,8 @@ export class Wallet extends BaseEntity {
     @Column({ nullable: true })
     isDefault: boolean;
 
-    @Column({ nullable: false })
+    @Column({ nullable: false, unique: true })
     accountNumber: string;
-
 
     @OneToMany(() => Transaction, (transaction) => transaction.senderWallet)
     transactions: Transaction[];

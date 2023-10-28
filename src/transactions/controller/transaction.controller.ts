@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { Request } from 'express';
 import { AdminGuard } from 'src/common/guards/admin.guard';
 import { IResponse } from 'src/common/interface/response.interface';
@@ -21,6 +21,7 @@ import { TransactionEvent } from '../enum/transaction.enum';
 import { TransactionService } from '../services/transaction.service';
 
 @ApiTags('Transaction')
+@ApiBearerAuth()
 @Controller('transaction')
 @UseGuards(AuthGuard())
 export class TransactionController {

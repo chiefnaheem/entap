@@ -24,3 +24,10 @@ export class IntializeFundWalletDto{
   @IsNotEmpty()
   amount: number;
 }
+
+export class VerifyTransactionDto{
+  @ApiProperty({ description: 'The transaction reference' })
+  @IsString()
+  @IsNotEmpty()
+  reference: string;
+}

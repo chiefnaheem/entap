@@ -14,7 +14,11 @@ import { ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { IResponse } from 'src/common/interface/response.interface';
 import { User } from 'src/user/entities/user.entity';
-import { CreateWalletDto, IntializeFundWalletDto } from '../dto/wallet.dto';
+import {
+  CreateWalletDto,
+  IntializeFundWalletDto,
+  VerifyTransactionDto,
+} from '../dto/wallet.dto';
 import { WalletService } from '../services/wallet.service';
 
 @ApiTags('Wallet')
@@ -76,6 +80,18 @@ export class WalletController {
     return {
       statusCode: HttpStatus.OK,
       message: 'Wallet funded successfully',
+      data: res,
+    };
+  }
+
+  @Post('verify-transaction')
+  async verifyTransaction(
+    @Body() body: VerifyTransactionDto,
+  ): Promise<IResponse> {
+    const res = await this.walletService.verifyTransaction(body.reference);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Transaction verified successfully',
       data: res,
     };
   }

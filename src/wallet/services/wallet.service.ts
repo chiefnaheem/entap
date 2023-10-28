@@ -73,8 +73,6 @@ export class WalletService {
     }
   }
 
-//   async fundWallet(id: string, amount: number): Promise<Wallet> {
-  //initiate transaction
 
   async intializeFundWallet(id: string, amount: number): Promise<any> {
     try {
@@ -87,6 +85,21 @@ export class WalletService {
           amount,
           email: user.email,
         }
+        );
+
+        return response
+      } catch (error) {
+        this.logger.error(error);
+        throw error;
+      }
+    }
+
+    async verifyTransaction(reference: string): Promise<any> {
+      try {
+        this.logger.debug(`Verifying transaction with reference ${reference}`);
+        const response = await this.httpService.request(
+          'GET',
+          `/transaction/verify/${reference}`,
         );
 
         return response

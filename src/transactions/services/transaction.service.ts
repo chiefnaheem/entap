@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { send } from 'process';
 import { generateRandomAlphanumeric } from 'src/common/functions/common';
 import { UserService } from 'src/user/service/user.service';
 import { Wallet } from 'src/wallet/entities/wallet.entity';
@@ -24,6 +25,11 @@ export class TransactionService {
   ): Promise<Transaction> {
     try {
       const { senderWallet, receiverWallet, amount } = transaction;
+      if (senderWallet === receiverWallet) {
+        throw new BadRequestException(
+          'Sender and receiver wallets cannot be the same',
+        );
+      }
 
       const [senderWalletDetails, receiverWalletDetails] = await Promise.all([
         this.walletService.findOneWalletById(senderWallet),
@@ -32,6 +38,12 @@ export class TransactionService {
 
       if (!senderWalletDetails || !receiverWalletDetails) {
         throw new BadRequestException('Invalid wallet details');
+      }
+
+      if (senderWalletDetails.currency !== receiverWalletDetails.currency) {
+        throw new BadRequestException(
+          'Sender and receiver wallets must be of the same currency',
+        );
       }
 
       if (senderWalletDetails.isLocked) {

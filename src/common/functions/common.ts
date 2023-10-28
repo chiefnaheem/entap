@@ -60,3 +60,4 @@ export const decrypt = (encryptedText: string) => {
   ).toString(CryptoJS.enc.Utf8);
   return decrypted;
 };
+

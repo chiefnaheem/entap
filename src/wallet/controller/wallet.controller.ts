@@ -21,7 +21,9 @@ import { WalletService } from '../services/wallet.service';
 @Controller('wallet')
 @UseGuards(AuthGuard())
 export class WalletController {
-  constructor(private readonly walletService: WalletService) {}
+  constructor(
+    private readonly walletService: WalletService,
+    ) {}
 
   @Post('create-wallet')
   async createWallet(

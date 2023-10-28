@@ -18,6 +18,8 @@ const JWT_SECRET = env.get('JWT_SECRET').asString();
 const JWT_EXPIRES_IN = env.get('JWT_EXPIRES_IN').asString();
 const MIGRATIONS_RUN = env.get('MIGRATIONS_RUN').asBool();
 const ENCRYPTION_KEY = env.get('ENCRYPTION_KEY').asString();
+const PAYSTACK_SECRET_KEY = env.get('PAYSTACK_SECRET_KEY').asString();
+const PAYSTACK_URL = env.get('PAYSTACK_URL').asString();
 
 
 const serverConfig = {
@@ -35,6 +37,8 @@ const serverConfig = {
   TYPEORM_SYNC,
   MIGRATIONS_RUN,
   ENCRYPTION_KEY,
+  PAYSTACK_SECRET_KEY,
+  PAYSTACK_URL,
 };
 
 export default serverConfig;

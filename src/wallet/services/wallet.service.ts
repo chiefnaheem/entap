@@ -23,7 +23,9 @@ export class WalletService {
       });
 
       if (existingWallet) {
-        throw new BadRequestException('Wallet already exists for this currency');
+        throw new BadRequestException(
+          'Wallet already exists for this currency',
+        );
       }
 
       const encyptedAccountNumber = encrypt(wallet.accountNumber);
@@ -35,6 +37,32 @@ export class WalletService {
       });
 
       return await this.walletRepository.save(newWallet);
+    } catch (error) {
+      this.logger.error(error);
+      throw error;
+    }
+  }
+
+  async findWalletByUser(user: string): Promise<Wallet[]> {
+    try {
+      this.logger.debug(`Finding wallet with user ${user}`);
+      const wallets = await this.walletRepository.find({
+        where: {
+          user,
+        },
+      });
+      return wallets;
+    } catch (error) {
+      this.logger.error(error);
+      throw error;
+    }
+  }
+
+  async findOneWalletById(id: string): Promise<Wallet> {
+    try {
+      this.logger.debug(`Finding wallet with id ${id}`);
+      const wallet = await this.walletRepository.findOne(id);
+      return wallet;
     } catch (error) {
       this.logger.error(error);
       throw error;

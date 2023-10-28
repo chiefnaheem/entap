@@ -26,7 +26,7 @@ export class Transaction extends BaseEntity {
   @Column({ nullable: false, enum: Object.values(TransactionStatus) })
   status: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, unique: true })
   currency: string;
 
   @Column({ nullable: true })

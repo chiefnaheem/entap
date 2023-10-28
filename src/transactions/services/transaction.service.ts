@@ -28,7 +28,7 @@ export class TransactionService {
       if (senderWalletDetails.isLocked) {
         throw new BadRequestException('Possible duplicate transaction');
       }
-  
+
       const receiverWalletDetails = await this.walletService.findOneWalletById(
         receiverWallet,
       );
@@ -53,15 +53,34 @@ export class TransactionService {
       await this.transactionRepository.save(newTransaction);
 
       await this.walletService.updateWallet(senderWallet, {
-        balance: senderWalletDetails.balance - amount,
         isLocked: true,
       });
 
-      await this.walletService.updateWallet(receiverWallet, {
-        balance: receiverWalletDetails.balance + amount,
-      });
+      //   await this.walletService.updateWallet(receiverWallet, {
+      //     balance: receiverWalletDetails.balance + amount,
+      //   });
 
       return newTransaction;
+    } catch (error) {
+      this.logger.error(error);
+      throw error;
+    }
+  }
+
+  async updateTransaction(
+    id: string,
+    transaction: Partial<Transaction>,
+  ): Promise<Transaction> {
+    try {
+      const transactionDetails = await this.transactionRepository.findOne(id);
+      if (!transactionDetails) {
+        throw new BadRequestException('Invalid transaction');
+      }
+      const updatedTransaction = await this.transactionRepository.save({
+        ...transactionDetails,
+        ...transaction,
+      });
+      return updatedTransaction;
     } catch (error) {
       this.logger.error(error);
       throw error;

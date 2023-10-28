@@ -5,7 +5,7 @@ export class TransactionDto {
   @IsNotEmpty()
   @IsNumber()
   @ApiProperty()
-  amount: string;
+  amount: number;
 
   @IsNotEmpty()
   @IsUUID()
@@ -17,8 +17,8 @@ export class TransactionDto {
   @ApiProperty()
   receiverWallet: string;
 
-    @IsNotEmpty()
-    @IsString()
-    @ApiProperty()
-    narration: string;
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty()
+  narration: string;
 }

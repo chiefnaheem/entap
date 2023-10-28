@@ -14,16 +14,14 @@ import { ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { IResponse } from 'src/common/interface/response.interface';
 import { User } from 'src/user/entities/user.entity';
-import { CreateWalletDto } from '../dto/wallet.dto';
+import { CreateWalletDto, IntializeFundWalletDto } from '../dto/wallet.dto';
 import { WalletService } from '../services/wallet.service';
 
 @ApiTags('Wallet')
 @Controller('wallet')
 @UseGuards(AuthGuard())
 export class WalletController {
-  constructor(
-    private readonly walletService: WalletService,
-    ) {}
+  constructor(private readonly walletService: WalletService) {}
 
   @Post('create-wallet')
   async createWallet(
@@ -62,6 +60,23 @@ export class WalletController {
       statusCode: HttpStatus.OK,
       message: 'Wallets fetched successfully',
       data: wallets,
+    };
+  }
+
+  @Post('intialize-fund-wallet')
+  async intializeFundWallet(
+    @Body() body: IntializeFundWalletDto,
+    @Req() req: Request,
+  ): Promise<IResponse> {
+    const user = req.user as User;
+    const res = await this.walletService.intializeFundWallet(
+      user.id as unknown as string,
+      body.amount,
+    );
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Wallet funded successfully',
+      data: res,
     };
   }
 }

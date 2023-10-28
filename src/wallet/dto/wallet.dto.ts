@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateWalletDto {
   @ApiProperty({ description: 'The account number of the wallet' })
@@ -16,4 +16,11 @@ export class CreateWalletDto {
   @IsBoolean()
   @IsOptional()
   isDefault: boolean;
+}
+
+export class IntializeFundWalletDto{
+  @ApiProperty({ description: 'The amount to fund the wallet' })
+  @IsInt()
+  @IsNotEmpty()
+  amount: number;
 }

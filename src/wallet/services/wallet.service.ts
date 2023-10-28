@@ -1,7 +1,8 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { encrypt } from 'src/common/functions/common';
-import { HttpService } from 'src/common/http/http.service';
+import { HttpServices } from 'src/common/http/http.service';
+import { UserService } from 'src/user/service/user.service';
 import { Repository } from 'typeorm';
 import { Wallet } from '../entities/wallet.entity';
 
@@ -10,7 +11,8 @@ export class WalletService {
   private readonly logger = new Logger(WalletService.name);
   constructor(
     @InjectRepository(Wallet) private walletRepository: Repository<Wallet>,
-    private readonly httpService: HttpService,
+    private readonly httpService: HttpServices,
+    private readonly userService: UserService,
   ) {}
 
   async createWallet(wallet: Partial<Wallet>, user: string): Promise<Wallet> {
@@ -72,4 +74,28 @@ export class WalletService {
   }
 
 //   async fundWallet(id: string, amount: number): Promise<Wallet> {
+  //initiate transaction
+
+  async intializeFundWallet(id: string, amount: number): Promise<any> {
+    try {
+      this.logger.debug(`Funding wallet with id ${id}`);
+      const user = await this.userService.findUserById(id);
+      const response = await this.httpService.request(
+        'POST',
+        `/transaction/initialize`,
+        {
+          amount,
+          email: user.email,
+        }
+        );
+
+        return response
+      } catch (error) {
+        this.logger.error(error);
+        throw error;
+      }
+    }
+
+
+
 }

@@ -1,10 +1,11 @@
-import { HttpModule, HttpService } from '@nestjs/axios';
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
+import { HttpServices } from './http.service';
 
 @Module({
   controllers: [],
-  providers: [HttpService],
+  providers: [HttpServices],
   imports: [HttpModule],
-  exports: [HttpModule, HttpService],
+  exports: [HttpModule, HttpServices],
 })
 export class HttpServiceModule {}

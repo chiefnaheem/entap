@@ -3,17 +3,18 @@ import { Injectable, Logger } from '@nestjs/common';
 import serverConfig from 'src/database/config/env.config';
 
 @Injectable()
-export class HttpService {
-  private readonly logger = new Logger(HttpService.name);
+export class HttpServices {
+  private readonly logger = new Logger(HttpServices.name);
   constructor(private readonly httpService: NestHttpService) {}
 
-  async request<T>(method: string, data?: any): Promise<T> {
+  async request<T>(method: string, url: string, data?: any): Promise<T> {
     try {
       const response = await this.httpService
         .request({
-          url: serverConfig.PAYSTACK_URL,
+          url,
           method,
           data,
+          baseURL: serverConfig.PAYSTACK_URL,
           headers: {
             Authorization: `Bearer ${serverConfig.PAYSTACK_SECRET_KEY}`,
           },

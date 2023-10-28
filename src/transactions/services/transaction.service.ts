@@ -25,6 +25,10 @@ export class TransactionService {
       const senderWalletDetails = await this.walletService.findOneWalletById(
         senderWallet,
       );
+      if (senderWalletDetails.isLocked) {
+        throw new BadRequestException('Possible duplicate transaction');
+      }
+  
       const receiverWalletDetails = await this.walletService.findOneWalletById(
         receiverWallet,
       );
@@ -42,13 +46,15 @@ export class TransactionService {
         createdBy: user,
         senderBalance: senderWalletDetails.balance - amount,
         receiverBalance: receiverWalletDetails.balance + amount,
-        status: TransactionStatus.SUCCESSFUL,
+        status: TransactionStatus.PENDING,
+        currency: senderWalletDetails.currency,
       });
 
       await this.transactionRepository.save(newTransaction);
 
       await this.walletService.updateWallet(senderWallet, {
         balance: senderWalletDetails.balance - amount,
+        isLocked: true,
       });
 
       await this.walletService.updateWallet(receiverWallet, {

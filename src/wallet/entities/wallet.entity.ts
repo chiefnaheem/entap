@@ -29,4 +29,7 @@ export class Wallet extends BaseEntity {
     @OneToMany(() => Transaction, (transaction) => transaction.receiverWallet)
     receivedTransactions: Transaction[];
 
+    @Column({ nullable: true })
+    isLocked: boolean;
+
 }

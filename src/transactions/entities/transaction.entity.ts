@@ -29,7 +29,7 @@ export class Transaction extends BaseEntity {
   @Column({ nullable: false })
   currency: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   reference: string;
 
   @Column({ nullable: false })

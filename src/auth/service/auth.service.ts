@@ -73,9 +73,9 @@ export class AuthService {
 
   async register(user: RegisterDto): Promise<Partial<User>> {
     try {
-      const { phoneNumber, password } = user;
+      const { phoneNumber, password, email } = user;
       const unifiedPhoneNumber = unifyPhoneNumber(phoneNumber);
-      const userExists = await this.findUserByPhone(unifiedPhoneNumber);
+      const userExists = await this.findUserByPhoneOrEmail(unifiedPhoneNumber, email);
       if (userExists) {
         throw new ConflictException('User already exists');
       }
@@ -85,6 +85,7 @@ export class AuthService {
         ...user,
         password: hashedPassword,
         role: UserRole.USER,
+        phoneNumber: unifiedPhoneNumber,
       });
       return instanceToPlain(newUser);
     } catch (error) {

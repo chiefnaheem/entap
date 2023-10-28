@@ -71,5 +71,5 @@ export class WalletService {
     }
   }
 
-  async fundWallet(id: string, amount: number): Promise<Wallet> {
+//   async fundWallet(id: string, amount: number): Promise<Wallet> {
 }

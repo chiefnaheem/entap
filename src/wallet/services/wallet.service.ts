@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { encrypt } from 'src/common/functions/common';
 import { Repository } from 'typeorm';
@@ -14,7 +14,18 @@ export class WalletService {
   async createWallet(wallet: Partial<Wallet>, user: string): Promise<Wallet> {
     try {
       this.logger.debug(`Creating wallet with data ${JSON.stringify(wallet)}`);
-      console.log(wallet.accountNumber, 'wallet.accountNumber')
+
+      const existingWallet = await this.walletRepository.findOne({
+        where: {
+          user,
+          currency: wallet.currency,
+        },
+      });
+
+      if (existingWallet) {
+        throw new BadRequestException('Wallet already exists for this currency');
+      }
+
       const encyptedAccountNumber = encrypt(wallet.accountNumber);
       const newWallet = this.walletRepository.create({
         ...wallet,
@@ -22,6 +33,7 @@ export class WalletService {
         accountNumber: encyptedAccountNumber,
         user,
       });
+
       return await this.walletRepository.save(newWallet);
     } catch (error) {
       this.logger.error(error);

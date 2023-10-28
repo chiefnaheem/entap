@@ -47,7 +47,7 @@ export const isPhoneNumber = (value: string): boolean => {
 export const encrypt = (text: string) => {
   const encrypted = CryptoJS.AES.encrypt(
     text,
-    process.env.ENCRYPTION_KEY,
+    serverConfig.ENCRYPTION_KEY,
   ).toString();
   return encrypted;
 };
@@ -56,7 +56,7 @@ export const encrypt = (text: string) => {
 export const decrypt = (encryptedText: string) => {
   const decrypted = CryptoJS.AES.decrypt(
     encryptedText,
-    process.env.ENCRYPTION_KEY,
+    serverConfig.ENCRYPTION_KEY,
   ).toString(CryptoJS.enc.Utf8);
   return decrypted;
 };

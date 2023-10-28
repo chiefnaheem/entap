@@ -11,21 +11,27 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Request } from 'express';
 import { IResponse } from 'src/common/interface/response.interface';
 import { User } from 'src/user/entities/user.entity';
+
 import {
   CreateWalletDto,
   IntializeFundWalletDto,
   VerifyTransactionDto,
 } from '../dto/wallet.dto';
 import { WalletService } from '../services/wallet.service';
+import { WalletEvent } from '../enum/wallet.enum';
 
 @ApiTags('Wallet')
 @Controller('wallet')
 @UseGuards(AuthGuard())
 export class WalletController {
-  constructor(private readonly walletService: WalletService) {}
+  constructor(
+    private readonly walletService: WalletService,
+    private readonly eventEmitter: EventEmitter2,
+    ) {}
 
   @Post('create-wallet')
   async createWallet(
@@ -89,6 +95,7 @@ export class WalletController {
     @Body() body: VerifyTransactionDto,
   ): Promise<IResponse> {
     const res = await this.walletService.verifyTransaction(body.reference);
+    this.eventEmitter.emit(WalletEvent.WALLET_FUNDED, res);
     return {
       statusCode: HttpStatus.OK,
       message: 'Transaction verified successfully',

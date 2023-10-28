@@ -4,7 +4,7 @@ import { generateRandomAlphanumeric } from 'src/common/functions/common';
 import { UserService } from 'src/user/service/user.service';
 import { Wallet } from 'src/wallet/entities/wallet.entity';
 import { WalletService } from 'src/wallet/services/wallet.service';
-import { Repository } from 'typeorm';
+import { Repository, LessThanOrEqual, MoreThanOrEqual, Between } from 'typeorm';
 import { Transaction } from '../entities/transaction.entity';
 import { TransactionStatus } from '../enum/transaction.enum';
 
@@ -118,7 +118,8 @@ export class TransactionService {
 
       const reference = generateRandomAlphanumeric(10);
 
-      const receiverWallet = transactionDetails.receiverWallet as unknown as Wallet;
+      const receiverWallet =
+        transactionDetails.receiverWallet as unknown as Wallet;
 
       await this.walletService.updateWallet(receiverWallet.id, {
         balance: receiverWallet.balance + transactionDetails.amount,
@@ -130,6 +131,29 @@ export class TransactionService {
       });
 
       return transactionDetails;
+    } catch (error) {
+      this.logger.error(error);
+      throw error;
+    }
+  }
+
+  async getMonthlyTransactions(dateStr: string): Promise<Transaction[]> {
+    try {
+      const [year, month] = dateStr.includes('-')
+        ? dateStr.split('-').reverse()
+        : dateStr.split('-');
+      const startDate = new Date(`${year}-${month}-01`);
+      const endDate = new Date(
+        new Date(startDate).setMonth(parseInt(month) + 1),
+      );
+
+      const transactions = await this.transactionRepository.find({
+        where: {
+          createdAt: Between(startDate, endDate),
+        },
+      });
+
+      return transactions;
     } catch (error) {
       this.logger.error(error);
       throw error;

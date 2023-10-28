@@ -5,6 +5,7 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -79,4 +80,17 @@ export class TransactionController {
       data: transaction,
     };
   }
+
+  @Get('monthly-transactions')
+  @UseGuards(AdminGuard)
+    async getMonthlyTransactions(@Query('dateFilter') dateFilter: string): Promise<IResponse> {
+    const transactions = await this.transactionService.getMonthlyTransactions(dateFilter);
+    return {
+        statusCode: 200,
+        message: 'Transactions fetched successfully',
+        data: transactions,
+    };
+    }
+
+
 }

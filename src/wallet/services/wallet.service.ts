@@ -95,9 +95,7 @@ export class WalletService {
     }
   }
 
-
-
-  async intializeFundWallet(id: string, amount: number): Promise<any> {
+  async intializeFundWallet(id: string, amount: number) {
     try {
       this.logger.debug(`Funding wallet with id ${id}`);
       const user = await this.userService.findUserById(id);
@@ -107,31 +105,28 @@ export class WalletService {
         {
           amount,
           email: user.email,
-        }
-        );
+        },
+      );
 
-        return response
-      } catch (error) {
-        this.logger.error(error);
-        throw error;
-      }
+      return response;
+    } catch (error) {
+      this.logger.error(error);
+      throw error;
     }
+  }
 
-    async verifyTransaction(reference: string): Promise<any> {
-      try {
-        this.logger.debug(`Verifying transaction with reference ${reference}`);
-        const response = await this.httpService.request(
-          'GET',
-          `/transaction/verify/${reference}`,
-        );
+  async verifyTransaction(reference: string) {
+    try {
+      this.logger.debug(`Verifying transaction with reference ${reference}`);
+      const response = await this.httpService.request(
+        'GET',
+        `/transaction/verify/${reference}`,
+      );
 
-        return response
-      } catch (error) {
-        this.logger.error(error);
-        throw error;
-      }
+      return response;
+    } catch (error) {
+      this.logger.error(error);
+      throw error;
     }
-
-
-
+  }
 }

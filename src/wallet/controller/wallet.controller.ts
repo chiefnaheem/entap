@@ -94,8 +94,7 @@ export class WalletController {
   async verifyTransaction(
     @Body() body: VerifyTransactionDto,
   ): Promise<IResponse> {
-    const res = await this.walletService.verifyTransaction(body.reference);
-    console.log(res, 'res')
+    const res = await this.walletService.verifyTransaction(body.reference) as any;
     if (res.status === true && res.data.status === 'success') {
       this.eventEmitter.emit(WalletEvent.WALLET_FUNDED, res.data);
     }

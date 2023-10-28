@@ -87,7 +87,14 @@ export class WalletService {
   async findOneWalletById(id: string): Promise<Wallet> {
     try {
       this.logger.debug(`Finding wallet with id ${id}`);
-      const wallet = await this.walletRepository.findOne(id);
+      const wallet = await this.walletRepository.findOne({
+        where: {
+          id,
+        },
+      });
+      if(!wallet) {
+        throw new BadRequestException('Wallet does not exist');
+      }
       wallet.accountNumber = decrypt(wallet.accountNumber);
       return wallet;
     } catch (error) {

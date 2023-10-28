@@ -25,6 +25,7 @@ export class TransactionService {
   ): Promise<Transaction> {
     try {
       const { senderWallet, receiverWallet, amount } = transaction;
+
       if (senderWallet === receiverWallet) {
         throw new BadRequestException(
           'Sender and receiver wallets cannot be the same',

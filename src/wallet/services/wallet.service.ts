@@ -73,6 +73,29 @@ export class WalletService {
     }
   }
 
+  async updateWalletByUserAndCurrency(
+    user: string,
+    currency: string,
+    amount: number,
+  ): Promise<Wallet> {
+    try {
+      this.logger.debug(`Finding wallet with user ${user}`);
+      const wallet = await this.walletRepository.findOne({
+        where: {
+          user,
+          currency,
+        },
+      });
+      wallet.balance = wallet.balance + amount;
+
+      return await this.walletRepository.save(wallet);
+    } catch (error) {
+      this.logger.error(error);
+      throw error;
+    }
+  }
+
+
 
   async intializeFundWallet(id: string, amount: number): Promise<any> {
     try {

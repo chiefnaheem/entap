@@ -31,7 +31,7 @@ export class WalletController {
   constructor(
     private readonly walletService: WalletService,
     private readonly eventEmitter: EventEmitter2,
-    ) {}
+  ) {}
 
   @Post('create-wallet')
   async createWallet(
@@ -90,12 +90,14 @@ export class WalletController {
     };
   }
 
-  @Post('verify-transaction')
+  @Post('fund-wallet')
   async verifyTransaction(
     @Body() body: VerifyTransactionDto,
   ): Promise<IResponse> {
     const res = await this.walletService.verifyTransaction(body.reference);
-    this.eventEmitter.emit(WalletEvent.WALLET_FUNDED, res);
+    if (res.status === 'success' && res.data.status === 'success') {
+      this.eventEmitter.emit(WalletEvent.WALLET_FUNDED, res.data);
+    }
     return {
       statusCode: HttpStatus.OK,
       message: 'Transaction verified successfully',

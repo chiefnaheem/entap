@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsBoolean, IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsEnum, IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { CurrencyEnum } from '../enum/wallet.enum';
 
 export class CreateWalletDto {
   @ApiProperty({ description: 'The account number of the wallet' })
@@ -7,8 +8,8 @@ export class CreateWalletDto {
   @IsNotEmpty()
   accountNumber: string;
 
-  @ApiProperty({ description: 'The currency of the wallet' })
-  @IsString()
+  @ApiProperty({ description: 'The currency of the wallet', enum: CurrencyEnum, default: CurrencyEnum.NGN })
+  @IsEnum(CurrencyEnum)
   @IsNotEmpty()
   currency: string;
 

@@ -1,5 +1,6 @@
 import { Module, RequestMethod } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import typeOrmConfig from 'typeorm.config';
 import { AuthModule } from './auth/auth.module';
@@ -14,6 +15,16 @@ import { WalletModule } from './wallet/wallet.module';
     ConfigModule.forRoot({
       isGlobal: true,
       cache: false,
+    }),
+
+    EventEmitterModule.forRoot({
+      wildcard: false,
+      delimiter: '.',
+      newListener: false,
+      removeListener: false,
+      maxListeners: 10,
+      verboseMemoryLeak: false,
+      ignoreErrors: false,
     }),
 
     AuthModule,

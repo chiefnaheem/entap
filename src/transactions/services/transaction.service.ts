@@ -1,6 +1,8 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { generateRandomAlphanumeric } from 'src/common/functions/common';
 import { UserService } from 'src/user/service/user.service';
+import { Wallet } from 'src/wallet/entities/wallet.entity';
 import { WalletService } from 'src/wallet/services/wallet.service';
 import { Repository } from 'typeorm';
 import { Transaction } from '../entities/transaction.entity';
@@ -113,6 +115,19 @@ export class TransactionService {
       if (!transactionDetails) {
         throw new BadRequestException('Invalid transaction');
       }
+
+      const reference = generateRandomAlphanumeric(10);
+
+      const receiverWallet = transactionDetails.receiverWallet as unknown as Wallet;
+
+      await this.walletService.updateWallet(receiverWallet.id, {
+        balance: receiverWallet.balance + transactionDetails.amount,
+      });
+
+      await this.updateTransaction(id, {
+        status: TransactionStatus.SUCCESSFUL,
+        reference,
+      });
 
       return transactionDetails;
     } catch (error) {

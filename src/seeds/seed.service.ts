@@ -13,7 +13,7 @@ export class SeedsService implements OnModuleInit {
       const adminExists = await this.userService.findAdminExists();
       if (!adminExists) {
         await this.userService.createUser({
-          email: 'naheemadedokun@gmail.com',
+          email: 'naheemade@gmail.com',
           password: hashPassword('Test@123!nb%'),
           firstName: 'Admin',
           lastName: 'Naheem',

@@ -96,23 +96,4 @@ export class WalletListener {
     });
   }
 
-  @OnEvent(TransactionEvent.TRANSACTION_UPDATED)
-  async handleTransactionUpdatedEvent(event: any): Promise<void> {
-    try {
-      const reference = generateRandomAlphanumeric(10);
-      const { receiverWallet, amount } = event;
-
-      await this.walletService.updateWallet(event.receiverWallet, {
-        balance: receiverWallet.balance + amount,
-      });
-
-      await this.transactionService.updateTransaction(event.id, {
-        status: TransactionStatus.SUCCESSFUL,
-        reference,
-      });
-    } catch (error) {
-      this.logger.error(error);
-      throw error;
-    }
-  }
 }

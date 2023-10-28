@@ -73,7 +73,6 @@ export class TransactionController {
     const transaction = await this.transactionService.adminApproveTransaction(
       id,
     );
-    this.eventEmitter.emit(TransactionEvent.TRANSACTION_UPDATED, transaction);
     return {
       statusCode: 200,
       message: 'Transaction approved successfully',

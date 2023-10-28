@@ -47,6 +47,28 @@ export class WalletService {
     }
   }
 
+  async updateWallet(id: string, wallet: Partial<Wallet>): Promise<Wallet> {
+    try {
+      this.logger.debug(`Updating wallet with id ${id}`);
+      const existingWallet = await this.walletRepository.findOne(id);
+
+      if (!existingWallet) {
+        throw new BadRequestException('Wallet does not exist');
+      }
+
+      const updatedWallet = this.walletRepository.merge(
+        existingWallet,
+        wallet,
+      );
+        
+      return await this.walletRepository.save(updatedWallet);
+
+    } catch (error) {
+      this.logger.error(error);
+      throw error;
+    }
+  }
+
   async findWalletByUser(user: string): Promise<Wallet[]> {
     try {
       this.logger.debug(`Finding wallet with user ${user}`);

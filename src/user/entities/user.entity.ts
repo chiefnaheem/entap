@@ -3,6 +3,7 @@ import { BaseEntity } from 'src/common/entity/base.entity';
 import { Wallet } from 'src/wallet/entities/wallet.entity';
 import { BeforeInsert, Column, Entity, OneToMany, ManyToOne } from 'typeorm';
 import { UserRole } from '../enum/user.enum';
+import { Transaction } from 'src/transactions/entities/transaction.entity';
 
 @Entity({
   name: 'user',
@@ -55,5 +56,8 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Wallet, (wallet) => wallet.user)
   wallets: Wallet[];
+
+  @OneToMany(() => Transaction, (transaction) => transaction.createdBy)
+  transactions: Transaction[];
 
 }

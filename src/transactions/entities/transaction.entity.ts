@@ -40,4 +40,10 @@ export class Transaction extends BaseEntity {
 
   @Column({ nullable: false })
   receiverBalance: number;
+
+  @ManyToOne(() => User, (user) => user.transactions, {
+    onDelete: 'CASCADE',
+    nullable: false,
+    })
+  createdBy: string;
 }

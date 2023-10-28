@@ -1,8 +1,9 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
+import { AdminGuard } from 'src/common/guards/admin.guard';
 import { IResponse } from 'src/common/interface/response.interface';
 import { User } from 'src/user/entities/user.entity';
 import { TransactionDto } from '../dto/transaction.dto';
@@ -31,7 +32,7 @@ export class TransactionController {
       user.id as unknown as string,
     );
     this.eventEmitter.emit(TransactionEvent.TRANSACTION_CREATED, transaction);
-    
+
     transaction.amount > 1000000
       ? (message = 'Transaction created successfully, awaiting admin approval')
       : (message = 'Transaction created successfully');
@@ -42,4 +43,15 @@ export class TransactionController {
       data: transaction,
     };
   }
+
+  @Get('transactions-to-approve')
+  @UseGuards(AdminGuard)
+    async getTransactionsToApprove(): Promise<IResponse> {
+      const transactions = await this.transactionService.getTransactionsToApprove();
+      return {
+        statusCode: 200,
+        message: 'Transactions fetched successfully',
+        data: transactions,
+      };
+    }
 }

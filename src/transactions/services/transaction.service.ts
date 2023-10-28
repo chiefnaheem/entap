@@ -91,4 +91,16 @@ export class TransactionService {
       throw error;
     }
   }
+
+    async getTransactionsToApprove(): Promise<Transaction[]> {
+        try {
+            const transactions = await this.transactionRepository.find({
+            where: { status: TransactionStatus.REQUIRES_ACTION },
+            });
+            return transactions;
+        } catch (error) {
+            this.logger.error(error);
+            throw error;
+        }
+        }
 }

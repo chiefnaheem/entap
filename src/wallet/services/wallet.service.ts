@@ -11,14 +11,16 @@ export class WalletService {
     @InjectRepository(Wallet) private walletRepository: Repository<Wallet>,
   ) {}
 
-  async createWallet(wallet: Partial<Wallet>): Promise<Wallet> {
+  async createWallet(wallet: Partial<Wallet>, user: string): Promise<Wallet> {
     try {
       this.logger.debug(`Creating wallet with data ${JSON.stringify(wallet)}`);
+      console.log(wallet.accountNumber, 'wallet.accountNumber')
       const encyptedAccountNumber = encrypt(wallet.accountNumber);
       const newWallet = this.walletRepository.create({
         ...wallet,
         balance: 0,
         accountNumber: encyptedAccountNumber,
+        user,
       });
       return await this.walletRepository.save(newWallet);
     } catch (error) {

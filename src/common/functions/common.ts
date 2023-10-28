@@ -2,6 +2,7 @@ import { BadRequestException } from '@nestjs/common';
 import { isNumberString } from 'class-validator';
 import * as bcrypt from 'bcryptjs';
 import * as CryptoJS from 'crypto-js';
+import serverConfig from 'src/database/config/env.config';
 
 
 export const comparePassword = (text: string, hashedText: string) => {

@@ -17,6 +17,7 @@ const TYPEORM_SYNC = env.get('TYPEORM_SYNC').required().asBool();
 const JWT_SECRET = env.get('JWT_SECRET').asString();
 const JWT_EXPIRES_IN = env.get('JWT_EXPIRES_IN').asString();
 const MIGRATIONS_RUN = env.get('MIGRATIONS_RUN').asBool();
+const ENCRYPTION_KEY = env.get('ENCRYPTION_KEY').asString();
 
 
 const serverConfig = {
@@ -33,6 +34,7 @@ const serverConfig = {
   JWT_EXPIRES_IN,
   TYPEORM_SYNC,
   MIGRATIONS_RUN,
+  ENCRYPTION_KEY,
 };
 
 export default serverConfig;

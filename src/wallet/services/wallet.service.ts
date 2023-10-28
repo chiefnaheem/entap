@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { encrypt } from 'src/common/functions/common';
+import { HttpService } from 'src/common/http/http.service';
 import { Repository } from 'typeorm';
 import { Wallet } from '../entities/wallet.entity';
 
@@ -9,6 +10,7 @@ export class WalletService {
   private readonly logger = new Logger(WalletService.name);
   constructor(
     @InjectRepository(Wallet) private walletRepository: Repository<Wallet>,
+    private readonly httpService: HttpService,
   ) {}
 
   async createWallet(wallet: Partial<Wallet>, user: string): Promise<Wallet> {
@@ -68,4 +70,6 @@ export class WalletService {
       throw error;
     }
   }
+
+  async fundWallet(id: string, amount: number): Promise<Wallet> {
 }

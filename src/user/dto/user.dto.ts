@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional, PartialType } from "@nestjs/swagger";
-import { IsInt, IsNotEmpty, IsOptional, IsString, IsUUID } from "class-validator";
+import { IsEmail, IsInt, IsNotEmpty, IsOptional, IsPhoneNumber, IsString, IsUUID } from "class-validator";
 
 export class UserDto {
     @ApiPropertyOptional()
@@ -13,9 +13,9 @@ export class UserDto {
     @IsOptional()
     lastName: string;
 
-    @ApiPropertyOptional()
-    @IsString()
-    @IsOptional()
+    @ApiProperty()
+    @IsPhoneNumber('NG')
+    @IsNotEmpty()
     phoneNumber: string;
 
     @ApiPropertyOptional()
@@ -28,23 +28,11 @@ export class UserDto {
     @IsOptional()
     dateOfBirth: string;
 
-    @ApiPropertyOptional()
-    @IsInt()
-    @IsOptional()
-    maxLeaveDays: number;
+    @ApiProperty()
+    @IsEmail()
+    @IsNotEmpty()
+    email: string;
 
 }
 
 export class UpdateUserDto extends PartialType(UserDto) {}
-
-export class AddEmployeeToCompanyDto {
-    // @ApiProperty()
-    // @IsUUID()
-    // @IsNotEmpty()
-    // employeeId: string;
-
-    @ApiProperty()
-    @IsUUID()
-    @IsNotEmpty()
-    companyId: string;
-}

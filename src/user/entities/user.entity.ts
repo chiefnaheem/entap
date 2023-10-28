@@ -19,6 +19,9 @@ export class User extends BaseEntity {
   lastName: string;
 
   @Column({ nullable: false, unique: true })
+  email: string;
+
+  @Column({ nullable: false, unique: true })
   phoneNumber: string;
 
   @Column({ enum: Object.values(UserRole), default: UserRole.USER })

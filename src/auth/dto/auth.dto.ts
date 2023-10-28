@@ -69,4 +69,9 @@ export class RegisterDto {
   @IsOptional()
   @IsString()
   dateOfBirth: string;
+
+  @ApiProperty()
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
 }

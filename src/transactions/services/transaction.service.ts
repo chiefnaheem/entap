@@ -104,11 +104,12 @@ export class TransactionService {
     }
   }
 
-  async adminApproveTransaction(
-    id: string,
-    ): Promise<Transaction> {
+  async adminApproveTransaction(id: string): Promise<Transaction> {
     try {
-      const transactionDetails = await this.transactionRepository.findOne(id);
+      const transactionDetails = await this.transactionRepository.findOne({
+        where: { id, status: TransactionStatus.REQUIRES_ACTION },
+        relations: ['senderWallet', 'receiverWallet'],
+      });
       if (!transactionDetails) {
         throw new BadRequestException('Invalid transaction');
       }
@@ -118,5 +119,5 @@ export class TransactionService {
       this.logger.error(error);
       throw error;
     }
-}
+  }
 }

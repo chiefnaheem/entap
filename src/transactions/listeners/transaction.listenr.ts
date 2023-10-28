@@ -99,18 +99,17 @@ export class WalletListener {
   @OnEvent(TransactionEvent.TRANSACTION_UPDATED)
   async handleTransactionUpdatedEvent(event: any): Promise<void> {
     try {
-      const { senderWallet, receiverWallet, amount } = event;
+      const reference = generateRandomAlphanumeric(10);
+      const { receiverWallet, amount } = event;
 
-      const [senderWalletDetails, receiverWalletDetails] = await Promise.all([
-        this.walletService.findOneWalletById(senderWallet),
-        this.walletService.findOneWalletById(receiverWallet),
-      ]);
+      await this.walletService.updateWallet(event.receiverWallet, {
+        balance: receiverWallet.balance + amount,
+      });
 
-      await this.processRegularTransaction(
-        event,
-        senderWalletDetails,
-        receiverWalletDetails,
-      );
+      await this.transactionService.updateTransaction(event.id, {
+        status: TransactionStatus.SUCCESSFUL,
+        reference,
+      });
     } catch (error) {
       this.logger.error(error);
       throw error;

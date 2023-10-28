@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import typeOrmConfig from 'typeorm.config';
 import { AuthModule } from './auth/auth.module';
 import { HttpServiceModule } from './common/http/http.module';
+import { TransactionModule } from './transactions/transactions.module';
 import { UserModule } from './user/user.module';
 import { WalletModule } from './wallet/wallet.module';
 
@@ -30,7 +31,8 @@ import { WalletModule } from './wallet/wallet.module';
     AuthModule,
     UserModule,
     WalletModule,
-    HttpServiceModule
+    HttpServiceModule,
+    TransactionModule
   ],
   controllers: [],
   providers: [],

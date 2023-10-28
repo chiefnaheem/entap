@@ -1,5 +1,6 @@
 import { BaseEntity } from 'src/common/entity/base.entity';
 import { User } from 'src/user/entities/user.entity';
+import { Wallet } from 'src/wallet/entities/wallet.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { TransactionStatus } from '../enum/transaction.enum';
 
@@ -7,17 +8,17 @@ import { TransactionStatus } from '../enum/transaction.enum';
   name: 'transaction',
 })
 export class Transaction extends BaseEntity {
-  @ManyToOne(() => User, (user) => user.wallets, {
+  @ManyToOne(() => Wallet, (wallet) => wallet.transactions, {
     onDelete: 'CASCADE',
     nullable: false,
-  })
-  sender: string;
+    })
+  senderWallet: string;
 
-  @ManyToOne(() => User, (user) => user.wallets, {
+  @ManyToOne(() => Wallet, (wallet) => wallet.receivedTransactions, {
     onDelete: 'CASCADE',
     nullable: false,
-  })
-  receiver: string;
+    })
+  receiverWallet: string;
 
   @Column({ nullable: false })
   amount: number;

@@ -1,6 +1,7 @@
 import { BaseEntity } from 'src/common/entity/base.entity';
+import { Transaction } from 'src/transactions/entities/transaction.entity';
 import { User } from 'src/user/entities/user.entity';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 
 @Entity({
   name: 'wallet',
@@ -20,4 +21,12 @@ export class Wallet extends BaseEntity {
 
     @Column({ nullable: false })
     accountNumber: string;
+
+
+    @OneToMany(() => Transaction, (transaction) => transaction.senderWallet)
+    transactions: Transaction[];
+
+    @OneToMany(() => Transaction, (transaction) => transaction.receiverWallet)
+    receivedTransactions: Transaction[];
+
 }

@@ -9,8 +9,10 @@ import { Transaction } from "../entities/transaction.entity";
 export class TransactionService {
   private readonly logger = new Logger(WalletService.name);
   constructor(
-    @InjectRepository(Transaction) private walletRepository: Repository<Transaction>,
+    @InjectRepository(Transaction) private transactionRepository: Repository<Transaction>,
     private readonly userService: UserService,
     private readonly walletService: WalletService,
   ) {}
+
+    async createTransaction(transaction: Partial<Transaction>, user: string): Promise<Transaction> {
 }

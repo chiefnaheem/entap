@@ -46,9 +46,31 @@ export class UserService {
     }
   }
 
+  async findUserByPhoneOrEmail(phoneNumber: string, email: string): Promise<User> {
+    try {
+      this.logger.debug(
+        `Finding user with phone number ${phoneNumber} or email ${email}`,
+      );
+      const user = await this.userRepository.findOne({
+        where: [
+          {
+            phoneNumber,
+          },
+          {
+            email,
+          },
+        ],
+      });
+      return user;
+    } catch (error) {
+      this.logger.error(error);
+      throw error;
+    }
+  }
+
   async findUserByPhone(phoneNumber: string): Promise<User> {
     try {
-      this.logger.debug(`Finding user with email ${phoneNumber}`);
+      this.logger.debug(`Finding user with phone number ${phoneNumber}`);
       const user = await this.userRepository.findOne({
         where: {
           phoneNumber,

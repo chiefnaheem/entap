@@ -26,9 +26,14 @@ export class AuthService {
     private readonly tokenService: TokenService,
   ) {}
 
-  async findUserByPhone(phone: string) {
+  async findUserByPhoneOrEmail(phone: string, email: string) {
+    return await this.userService.findUserByPhoneOrEmail(phone, email);
+  }
+
+  async findUserByPhone(phone: string): Promise<User> {
     return await this.userService.findUserByPhone(phone);
   }
+
   async validateUser(phoneNumber: string, password: string) {
     const user = await this.findUserByPhone(phoneNumber);
     if (user && comparePassword(password, user.password)) {
@@ -37,7 +42,9 @@ export class AuthService {
     return null;
   }
 
-  async login(user: LoginDto): Promise<{ accessToken: string; user: Partial<User> }> {
+  async login(
+    user: LoginDto,
+  ): Promise<{ accessToken: string; user: Partial<User> }> {
     try {
       const { phoneNumber, password } = user;
       const unifiedPhoneNumber = unifyPhoneNumber(phoneNumber);
@@ -57,7 +64,7 @@ export class AuthService {
         `Generated JWT Token with payload ${JSON.stringify(payload)}`,
       );
 
-      return { accessToken, user: instanceToPlain(userExists)  };
+      return { accessToken, user: instanceToPlain(userExists) };
     } catch (error) {
       this.logger.error(error);
       throw error;

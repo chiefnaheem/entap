@@ -49,4 +49,17 @@ export class WalletController {
       data: wallet,
     };
   }
+
+  @Get('find-wallets')
+  async findWallets(@Req() req: Request): Promise<IResponse> {
+    const user = req.user as User;
+    const wallets = await this.walletService.findWalletByUser(
+      user.id as unknown as string,
+    );
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Wallets fetched successfully',
+      data: wallets,
+    };
+  }
 }

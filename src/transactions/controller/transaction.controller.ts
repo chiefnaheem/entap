@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
@@ -57,16 +66,18 @@ export class TransactionController {
   }
 
   @Post('admin-approve-transaction/:id')
-    @UseGuards(AdminGuard)
-    async adminApproveTransaction(
-        @Param('id', ParseUUIDPipe) id: string,
-    ): Promise<IResponse> {
-        const transaction = await this.transactionService.adminApproveTransaction(id);
-        this.eventEmitter.emit(TransactionEvent.TRANSACTION_UPDATED, transaction);
-        return {
-            statusCode: 200,
-            message: 'Transaction approved successfully',
-            data: transaction,
-        };
-    }
+  @UseGuards(AdminGuard)
+  async adminApproveTransaction(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<IResponse> {
+    const transaction = await this.transactionService.adminApproveTransaction(
+      id,
+    );
+    this.eventEmitter.emit(TransactionEvent.TRANSACTION_UPDATED, transaction);
+    return {
+      statusCode: 200,
+      message: 'Transaction approved successfully',
+      data: transaction,
+    };
+  }
 }

@@ -19,8 +19,10 @@ export class WalletListener {
   @OnEvent(TransactionEvent.TRANSACTION_CREATED)
   async handleTransactionCreatedEvent(event: any): Promise<void> {
     try {
-      const senderWalletDetails = await this.fetchWalletDetails(event.senderWallet);
-      const receiverWalletDetails = await this.fetchWalletDetails(event.receiverWallet);
+        const [senderWalletDetails, receiverWalletDetails] = await Promise.all([
+            this.walletService.findOneWalletById(event.senderWallet),
+            this.walletService.findOneWalletById(event.receiverWallet),
+          ]);
   
       if (event.amount > 1000000) {
         await this.handleLargeAmountTransaction(event, senderWalletDetails);

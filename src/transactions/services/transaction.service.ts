@@ -22,43 +22,48 @@ export class TransactionService {
   ): Promise<Transaction> {
     try {
       const { senderWallet, receiverWallet, amount } = transaction;
-      const senderWalletDetails = await this.walletService.findOneWalletById(
-        senderWallet,
-      );
-      if (senderWalletDetails.isLocked) {
-        throw new BadRequestException('Possible duplicate transaction');
-      }
 
-      const receiverWalletDetails = await this.walletService.findOneWalletById(
-        receiverWallet,
-      );
+      const [senderWalletDetails, receiverWalletDetails] = await Promise.all([
+        this.walletService.findOneWalletById(senderWallet),
+        this.walletService.findOneWalletById(receiverWallet),
+      ]);
 
       if (!senderWalletDetails || !receiverWalletDetails) {
         throw new BadRequestException('Invalid wallet details');
+      }
+
+      if (senderWalletDetails.isLocked) {
+        throw new BadRequestException('Possible duplicate transaction');
       }
 
       if (senderWalletDetails.balance < amount) {
         throw new BadRequestException('Insufficient funds');
       }
 
-      const newTransaction = this.transactionRepository.create({
-        ...transaction,
-        createdBy: user,
-        senderBalance: senderWalletDetails.balance - amount,
-        receiverBalance: receiverWalletDetails.balance + amount,
-        status: TransactionStatus.PENDING,
-        currency: senderWalletDetails.currency,
-      });
+      const updatedSenderWallet = await this.walletService.updateWallet(
+        senderWallet,
+        { isLocked: true },
+      );
 
-      await this.transactionRepository.save(newTransaction);
+      const newTransaction =
+        await this.transactionRepository.manager.transaction(
+          async (transactionalEntityManager) => {
+            const createdTransaction = this.transactionRepository.create({
+              ...transaction,
+              createdBy: user,
+              senderBalance: updatedSenderWallet.balance - amount,
+              receiverBalance: receiverWalletDetails.balance + amount,
+              status: TransactionStatus.PENDING,
+              currency: senderWalletDetails.currency,
+            });
 
-      await this.walletService.updateWallet(senderWallet, {
-        isLocked: true,
-      });
+            await transactionalEntityManager
+              .getRepository(Transaction)
+              .save(createdTransaction);
 
-      //   await this.walletService.updateWallet(receiverWallet, {
-      //     balance: receiverWalletDetails.balance + amount,
-      //   });
+            return createdTransaction;
+          },
+        );
 
       return newTransaction;
     } catch (error) {
@@ -76,10 +81,10 @@ export class TransactionService {
       if (!transactionDetails) {
         throw new BadRequestException('Invalid transaction');
       }
-      const updatedTransaction = await this.transactionRepository.save({
-        ...transactionDetails,
-        ...transaction,
-      });
+      Object.assign(transactionDetails, transaction);
+      const updatedTransaction = await this.transactionRepository.save(
+        transactionDetails,
+      );
       return updatedTransaction;
     } catch (error) {
       this.logger.error(error);

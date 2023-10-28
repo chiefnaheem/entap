@@ -83,14 +83,16 @@ export class TransactionController {
 
   @Get('monthly-transactions')
   @UseGuards(AdminGuard)
-    async getMonthlyTransactions(@Query('dateFilter') dateFilter: string): Promise<IResponse> {
-    const transactions = await this.transactionService.getMonthlyTransactions(dateFilter);
+  async getMonthlyTransactions(
+    @Query('dateFilter') dateFilter: string,
+  ): Promise<IResponse> {
+    const transactions = await this.transactionService.getMonthlyTransactions(
+      dateFilter,
+    );
     return {
-        statusCode: 200,
-        message: 'Transactions fetched successfully',
-        data: transactions,
+      statusCode: 200,
+      message: 'Transactions fetched successfully',
+      data: transactions,
     };
-    }
-
-
+  }
 }

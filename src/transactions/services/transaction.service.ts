@@ -137,15 +137,25 @@ export class TransactionService {
     }
   }
 
-  async getMonthlyTransactions(dateStr: string): Promise<Transaction[]> {
+  async getMonthlyTransactions(dateStr?: string): Promise<Transaction[]> {
     try {
-      const [year, month] = dateStr.includes('-')
-        ? dateStr.split('-').reverse()
-        : dateStr.split('-');
-      const startDate = new Date(`${year}-${month}-01`);
-      const endDate = new Date(
-        new Date(startDate).setMonth(parseInt(month) + 1),
-      );
+      let startDate: Date;
+      let endDate: Date;
+
+      if (dateStr) {
+        const [year, month] = dateStr.includes('-')
+          ? dateStr.split('-').reverse()
+          : dateStr.split('-');
+        startDate = new Date(`${year}-${month}-01`);
+        endDate = new Date(new Date(startDate).setMonth(parseInt(month) + 1));
+      } else {
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear();
+        const currentMonth = currentDate.getMonth() + 1;
+
+        startDate = new Date(`${currentYear}-${currentMonth}-01`);
+        endDate = new Date(new Date(startDate).setMonth(currentMonth));
+      }
 
       const transactions = await this.transactionRepository.find({
         where: {

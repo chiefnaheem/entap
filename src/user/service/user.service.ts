@@ -94,6 +94,22 @@ export class UserService {
     }
   }
 
+  async findUserByEmail(email: string): Promise<User> {
+    try {
+      this.logger.debug(`Finding user with email ${email}`);
+      const user = await this.userRepository.findOne({
+        where: {
+          email,
+        },
+      });
+      return user;
+    } catch (error) {
+      this.logger.error(error);
+      throw error;
+    }
+  }
+  
+
   async updateUser(id: string, user: Partial<User>): Promise<User> {
     try {
       this.logger.debug(`Updating user with id ${id}`);

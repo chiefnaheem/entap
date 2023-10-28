@@ -95,7 +95,8 @@ export class WalletController {
     @Body() body: VerifyTransactionDto,
   ): Promise<IResponse> {
     const res = await this.walletService.verifyTransaction(body.reference);
-    if (res.status === 'success' && res.data.status === 'success') {
+    console.log(res, 'res')
+    if (res.status === true && res.data.status === 'success') {
       this.eventEmitter.emit(WalletEvent.WALLET_FUNDED, res.data);
     }
     return {

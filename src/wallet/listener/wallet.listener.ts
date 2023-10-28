@@ -15,7 +15,7 @@ export class WalletListener {
   @OnEvent(WalletEvent.WALLET_FUNDED)
   async handleWalletFundedEvent(event: any): Promise<void> {
     try {
-      const user = await this.userService.findUserById(event.customer.email);
+      const user = await this.userService.findUserByEmail(event.customer.email);
       const wallet = await this.walletService.updateWalletByUserAndCurrency(
         user.id,
         event.currency,

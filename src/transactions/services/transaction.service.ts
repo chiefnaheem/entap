@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { send } from 'process';
 import { generateRandomAlphanumeric } from 'src/common/functions/common';
 import { User } from 'src/user/entities/user.entity';
-import { UserService } from 'src/user/service/user.service';
 import { Wallet } from 'src/wallet/entities/wallet.entity';
 import { WalletService } from 'src/wallet/services/wallet.service';
 import { Repository, LessThanOrEqual, MoreThanOrEqual, Between } from 'typeorm';
@@ -177,6 +176,7 @@ export class TransactionService {
         where: {
           createdAt: Between(startDate, endDate),
         },
+        relations: ['receiverWallet', 'senderWallet'],
       });
 
       return transactions;

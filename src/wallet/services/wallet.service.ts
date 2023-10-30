@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { decrypt, encrypt } from 'src/common/functions/common';
 import { HttpServices } from 'src/common/http/http.service';
 import { UserService } from 'src/user/service/user.service';
 import { Repository } from 'typeorm';
@@ -33,11 +32,10 @@ export class WalletService {
         );
       }
 
-      const encyptedAccountNumber = encrypt(wallet.accountNumber);
+      // const encyptedAccountNumber = encrypt(wallet.accountNumber);
       const newWallet = this.walletRepository.create({
         ...wallet,
         balance: 0,
-        accountNumber: encyptedAccountNumber,
         user,
       });
 
@@ -74,9 +72,7 @@ export class WalletService {
           user,
         },
       });
-      wallets.forEach((wallet) => {
-        wallet.accountNumber = decrypt(wallet.accountNumber);
-      });
+
       return wallets;
     } catch (error) {
       this.logger.error(error);
@@ -93,10 +89,9 @@ export class WalletService {
         },
         relations: ['user'],
       });
-      if(!wallet) {
+      if (!wallet) {
         throw new BadRequestException('Wallet does not exist');
       }
-      wallet.accountNumber = decrypt(wallet.accountNumber);
       return wallet;
     } catch (error) {
       this.logger.error(error);
@@ -104,21 +99,18 @@ export class WalletService {
     }
   }
 
-  async findWalletByAccountNumber(
-    accountNumber: string,
-  ): Promise<Wallet | undefined> {
+  async findWalletByAccountNumber(accountNumber: string): Promise<Wallet> {
     try {
-      //bear in mind that the account number is encrypted
       this.logger.debug(`Finding wallet with account number ${accountNumber}`);
       const wallet = await this.walletRepository.findOne({
         where: {
-          accountNumber: encrypt(accountNumber),
+          accountNumber,
         },
+        relations: ['user'],
       });
       if (!wallet) {
         throw new BadRequestException('Wallet does not exist');
       }
-      wallet.accountNumber = decrypt(wallet.accountNumber);
       return wallet;
     } catch (error) {
       this.logger.error(error);

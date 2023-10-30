@@ -33,6 +33,9 @@ $ yarn install
 ```
 
 ## Running the app
+```bash
+$ create a .env file in the project directory and copy the enviromental variables in .env.sample file into it. Assign the variables correctly and all is set.
+```
 
 ```bash
 # development

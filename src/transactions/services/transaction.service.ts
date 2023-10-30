@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { send } from 'process';
 import { generateRandomAlphanumeric } from 'src/common/functions/common';
+import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/service/user.service';
 import { Wallet } from 'src/wallet/entities/wallet.entity';
 import { WalletService } from 'src/wallet/services/wallet.service';
@@ -15,7 +16,6 @@ export class TransactionService {
   constructor(
     @InjectRepository(Transaction)
     private transactionRepository: Repository<Transaction>,
-    private readonly userService: UserService,
     private readonly walletService: WalletService,
   ) {}
 
@@ -24,21 +24,24 @@ export class TransactionService {
     user: string,
   ): Promise<Transaction> {
     try {
-      const { senderWallet, receiverWallet, amount } = transaction;
-
-      if (senderWallet === receiverWallet) {
-        throw new BadRequestException(
-          'Sender and receiver wallets cannot be the same',
-        );
-      }
+      const { senderWallet, receiverAccountNumber, amount } = transaction;
 
       const [senderWalletDetails, receiverWalletDetails] = await Promise.all([
         this.walletService.findOneWalletById(senderWallet),
-        this.walletService.findOneWalletById(receiverWallet),
+        this.walletService.findWalletByAccountNumber(receiverAccountNumber),
       ]);
+
+      const sender = senderWalletDetails.user as unknown as User;
+      const receiver = receiverWalletDetails.user as unknown as User;
 
       if (!senderWalletDetails || !receiverWalletDetails) {
         throw new BadRequestException('Invalid wallet details');
+      }
+
+      if (sender.id === receiver.id) {
+        throw new BadRequestException(
+          'Sender and receiver wallets cannot be the same',
+        );
       }
 
       if (senderWalletDetails.currency !== receiverWalletDetails.currency) {
@@ -70,6 +73,7 @@ export class TransactionService {
               receiverBalance: receiverWalletDetails.balance + amount,
               status: TransactionStatus.PENDING,
               currency: senderWalletDetails.currency,
+              receiverWallet: receiverWalletDetails.id,
             });
 
             await transactionalEntityManager
@@ -79,7 +83,6 @@ export class TransactionService {
             return createdTransaction;
           },
         );
-
       return newTransaction;
     } catch (error) {
       this.logger.error(error);

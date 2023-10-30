@@ -15,7 +15,7 @@ export class TransactionDto {
   @IsNotEmpty()
   @IsUUID()
   @ApiProperty()
-  receiverWallet: string;
+  receiverAccountNumber: string;
 
   @IsNotEmpty()
   @IsString()

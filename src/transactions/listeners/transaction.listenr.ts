@@ -8,7 +8,7 @@ import { TransactionEvent, TransactionStatus } from '../enum/transaction.enum';
 import { TransactionService } from '../services/transaction.service';
 
 @Injectable()
-export class WalletListener {
+export class TransactionListener {
   private logger = new Logger('Transaction Listener');
   constructor(
     private readonly walletService: WalletService,
@@ -19,6 +19,7 @@ export class WalletListener {
   @OnEvent(TransactionEvent.TRANSACTION_CREATED)
   async handleTransactionCreatedEvent(event: any): Promise<void> {
     try {
+        this.logger.debug(`Transaction created ${JSON.stringify(event)}`);
       const [senderWalletDetails, receiverWalletDetails] = await Promise.all([
         this.walletService.findOneWalletById(event.senderWallet),
         this.walletService.findOneWalletById(event.receiverWallet),

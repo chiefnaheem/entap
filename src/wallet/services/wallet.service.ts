@@ -91,8 +91,31 @@ export class WalletService {
         where: {
           id,
         },
+        relations: ['user'],
       });
       if(!wallet) {
+        throw new BadRequestException('Wallet does not exist');
+      }
+      wallet.accountNumber = decrypt(wallet.accountNumber);
+      return wallet;
+    } catch (error) {
+      this.logger.error(error);
+      throw error;
+    }
+  }
+
+  async findWalletByAccountNumber(
+    accountNumber: string,
+  ): Promise<Wallet | undefined> {
+    try {
+      //bear in mind that the account number is encrypted
+      this.logger.debug(`Finding wallet with account number ${accountNumber}`);
+      const wallet = await this.walletRepository.findOne({
+        where: {
+          accountNumber: encrypt(accountNumber),
+        },
+      });
+      if (!wallet) {
         throw new BadRequestException('Wallet does not exist');
       }
       wallet.accountNumber = decrypt(wallet.accountNumber);

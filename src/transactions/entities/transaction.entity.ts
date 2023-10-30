@@ -11,14 +11,17 @@ export class Transaction extends BaseEntity {
   @ManyToOne(() => Wallet, (wallet) => wallet.transactions, {
     onDelete: 'CASCADE',
     nullable: false,
-    })
+  })
   senderWallet: string;
 
   @ManyToOne(() => Wallet, (wallet) => wallet.receivedTransactions, {
     onDelete: 'CASCADE',
     nullable: false,
-    })
+  })
   receiverWallet: string;
+
+  @Column({ nullable: false })
+  receiverAccountNumber: string;
 
   @Column({ nullable: false })
   amount: number;
@@ -26,7 +29,7 @@ export class Transaction extends BaseEntity {
   @Column({ nullable: false, enum: Object.values(TransactionStatus) })
   status: string;
 
-  @Column({ nullable: false, unique: true })
+  @Column({ nullable: false })
   currency: string;
 
   @Column({ nullable: true })
@@ -44,6 +47,6 @@ export class Transaction extends BaseEntity {
   @ManyToOne(() => User, (user) => user.transactions, {
     onDelete: 'CASCADE',
     nullable: false,
-    })
+  })
   createdBy: string;
 }

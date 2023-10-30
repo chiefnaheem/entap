@@ -21,7 +21,7 @@ import { TransactionEvent } from '../enum/transaction.enum';
 import { TransactionService } from '../services/transaction.service';
 
 @ApiTags('Transaction')
-@ApiBearerAuth()
+@ApiBearerAuth('Bearer')
 @Controller('transaction')
 @UseGuards(AuthGuard())
 export class TransactionController {
@@ -96,4 +96,5 @@ export class TransactionController {
       data: transactions,
     };
   }
+
 }

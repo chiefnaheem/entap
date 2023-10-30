@@ -25,7 +25,7 @@ import { WalletService } from '../services/wallet.service';
 import { WalletEvent } from '../enum/wallet.enum';
 
 @ApiTags('Wallet')
-@ApiBearerAuth()
+@ApiBearerAuth('Bearer')
 @Controller('wallet')
 @UseGuards(AuthGuard())
 export class WalletController {

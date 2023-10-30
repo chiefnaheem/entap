@@ -13,7 +13,7 @@ export class TransactionDto {
   senderWallet: string;
 
   @IsNotEmpty()
-  @IsUUID()
+  @IsString()
   @ApiProperty()
   receiverAccountNumber: string;
 

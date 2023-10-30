@@ -50,6 +50,9 @@ $ yarn run start:dev
 $ yarn run start:prod
 ```
 
+## Documentation
+$ swagger documentation can be found on {HOST_URL}/docs
+
 ## Test
 
 ```bash
